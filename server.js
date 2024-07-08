@@ -12,7 +12,7 @@ const MONGODB_URI = process.env.MONGODB_URI;
 app.use(express.json());
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: "false" }));
-app.use(express.static(path.resolve(__dirname, "frontend/build")));
+//app.use(express.static(path.resolve(__dirname, "frontend/build")));
 
 MongoClient.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true }, (err, client) => {
   if (err) {
@@ -46,18 +46,11 @@ MongoClient.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: tr
     require("./getHistory")(req, res, collection);
   });
 
-  if (process.env.NODE_ENV === "production") {
-    app.use(express.static("frontend/build/"));
-    app.get("*", (req, res) => {
-      console.log(__dirname);
-      res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"));
-    });
-  } else {
-    app.get("/", (req, res) => {
-      res.send("Tamizh Hall Booking Server running");
-    });
-  }
+  app.get("/", (req, res) => {
+    res.send("Tamizh Hall Booking Server running");
+  });
 
+  // Start the server after successfully connecting to the database
   app.listen(PORT, () => {
     console.log("Server is listening to port " + PORT);
   });
